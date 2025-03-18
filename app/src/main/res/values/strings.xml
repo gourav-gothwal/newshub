@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TestApp</string>
+    <string name="preview_image">Image Preview</string>
+    <string name="select_image">Select Image</string>
+    <string name="calorie_info">Calorie Information will be displayed here.</string>
+</resources>
