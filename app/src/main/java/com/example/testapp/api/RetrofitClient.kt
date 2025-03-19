@@ -1,6 +1,5 @@
-package com.example.testapp.network
+package com.example.testapp.api
 
-import com.example.testapp.NewsApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

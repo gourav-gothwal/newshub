@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.testapp.R
 import com.example.testapp.models.Article
 
-class NewsAdapter(private val articles: List<Article>) :
+class NewsAdapter(private var articles: List<Article>) :
     RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -29,11 +29,22 @@ class NewsAdapter(private val articles: List<Article>) :
         holder.newsTitle.text = article.title
         holder.newsDescription.text = article.description ?: "No description available"
 
-        Glide.with(holder.itemView.context)
-            .load(article.urlToImage)
-            .placeholder(android.R.color.darker_gray)
-            .into(holder.newsImage)
+        // Check if the image URL is empty or null
+        if (!article.urlToImage.isNullOrEmpty()) {
+            holder.newsImage.visibility = View.VISIBLE
+            Glide.with(holder.itemView.context)
+                .load(article.urlToImage)
+                .into(holder.newsImage)
+        } else {
+            holder.newsImage.visibility = View.GONE // Hide the ImageView if no image available
+        }
     }
 
     override fun getItemCount(): Int = articles.size
+
+    // Function to update the data dynamically
+    fun updateData(newArticles: List<Article>) {
+        articles = newArticles
+        notifyDataSetChanged()
+    }
 }

@@ -1,5 +1,6 @@
-package com.example.testapp
+package com.example.testapp.api
 
+import com.example.testapp.models.NewsResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

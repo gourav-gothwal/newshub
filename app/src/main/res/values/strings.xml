@@ -4,4 +4,6 @@
     <string name="preview_image">Image Preview</string>
     <string name="select_image">Select Image</string>
     <string name="calorie_info">Calorie Information will be displayed here.</string>
+    <string name="api_key">f4f7958fb56d4f5bac22211321ec7811</string>
+    <string name="default_web_client_id">149812459959-9avs4h9tvkb9iv5mrr20s7g915urdji2.apps.googleusercontent.com</string>
 </resources>

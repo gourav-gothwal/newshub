@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -21,20 +23,23 @@
         android:theme="@style/Theme.TestApp"
         tools:targetApi="31">
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">  <!-- Changed from false to true -->
+        <!-- Main Activity -->
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- Authentication Activities -->
+        <activity android:name=".loginpage" android:exported="false" />
+        <activity android:name=".accountcreation" android:exported="false" />
+
+        <!-- Other Activities -->
         <activity android:name=".ArticlePage" android:exported="false" />
         <activity android:name=".ProfilePage" android:exported="false" />
         <activity android:name=".bookmarkspage" android:exported="false" />
-        <activity android:name=".loginpage" android:exported="false" />
-        <activity android:name=".data.accountcreation" android:exported="false" />
 
     </application>
 
