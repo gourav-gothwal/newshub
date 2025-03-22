@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var progressBar: ProgressBar
-    private lateinit var logoutButton: Button
     private var currentUser: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,16 +44,10 @@ class MainActivity : AppCompatActivity() {
         // Initialize Views
         recyclerView = findViewById(R.id.recyclerView)
         progressBar = findViewById(R.id.progressBar)
-        logoutButton = findViewById(R.id.buttonLogout)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         newsAdapter = NewsAdapter(emptyList())
         recyclerView.adapter = newsAdapter
-
-        logoutButton.setOnClickListener {
-            auth.signOut()
-            redirectToLogin()
-        }
 
         fetchNews()
     }
@@ -65,12 +57,12 @@ class MainActivity : AppCompatActivity() {
 
         val apiKey = getString(R.string.api_key) // Fetch API Key from strings.xml
 
-        RetrofitClient.instance.getTopHeadlines("us", apiKey)
+        RetrofitClient.instance.getNews(apiKey, "technology", "en")
             .enqueue(object : Callback<NewsResponse> {
                 override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
                     progressBar.visibility = View.GONE
                     if (response.isSuccessful) {
-                        val articles = response.body()?.articles ?: emptyList()
+                        val articles = response.body()?.results ?: emptyList()
                         newsAdapter.updateData(articles)
                     } else {
                         showToast("Failed to load news: ${response.message()}")
