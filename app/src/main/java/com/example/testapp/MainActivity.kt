@@ -2,28 +2,20 @@ package com.example.testapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.testapp.adapters.NewsAdapter
-import com.example.testapp.api.RetrofitClient
-import com.example.testapp.models.NewsResponse
+import androidx.fragment.app.Fragment
+import com.example.testapp.fragments.BookmarksFragment
+import com.example.testapp.fragments.HomeFragment
+import com.example.testapp.fragments.ProfileFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var newsAdapter: NewsAdapter
-    private lateinit var progressBar: ProgressBar
+    private lateinit var bottomNavigationView: BottomNavigationView
     private var currentUser: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
 
-        // Check if user is logged in, otherwise redirect to login
         if (currentUser == null) {
             redirectToLogin()
             return
@@ -41,48 +32,51 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this, "Welcome ${currentUser?.displayName ?: currentUser?.email}", Toast.LENGTH_SHORT).show()
 
-        // Initialize Views
-        recyclerView = findViewById(R.id.recyclerView)
-        progressBar = findViewById(R.id.progressBar)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        newsAdapter = NewsAdapter(emptyList())
-        recyclerView.adapter = newsAdapter
+        // Load HomeFragment by default
+        if (savedInstanceState == null) {
+            loadFragment(HomeFragment())
+        }
 
-        fetchNews()
-    }
-
-    private fun fetchNews() {
-        progressBar.visibility = View.VISIBLE
-
-        val apiKey = getString(R.string.api_key) // Fetch API Key from strings.xml
-
-        RetrofitClient.instance.getNews(apiKey, "technology", "en")
-            .enqueue(object : Callback<NewsResponse> {
-                override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
-                    progressBar.visibility = View.GONE
-                    if (response.isSuccessful) {
-                        val articles = response.body()?.results ?: emptyList()
-                        newsAdapter.updateData(articles)
-                    } else {
-                        showToast("Failed to load news: ${response.message()}")
-                    }
+        // Handle bottom navigation clicks
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> {
+                    loadFragment(HomeFragment())
+                    true
                 }
-
-                override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
-                    progressBar.visibility = View.GONE
-                    Log.e("NewsApp", "Error: ${t.message}")
-                    showToast("Network error: ${t.message}")
+                R.id.bookmarks -> {
+                    loadFragment(BookmarksFragment())
+                    true
                 }
-            })
+                R.id.profile -> {
+                    loadFragment(ProfileFragment())
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun redirectToLogin() {
-        startActivity(Intent(this, loginpage::class.java))
+        startActivity(Intent(this, loginpage::class.java))  // Ensure class name is correct
         finish()
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
+    }
+
+    override fun onBackPressed() {
+        val homeFragment = supportFragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName)
+        if (homeFragment == null || !homeFragment.isVisible) {
+            loadFragment(HomeFragment())
+            bottomNavigationView.selectedItemId = R.id.home
+        } else {
+            super.onBackPressed()
+        }
     }
 }
