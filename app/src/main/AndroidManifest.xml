@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.testapp"> <!-- Updated package name -->
+    package="com.example.testapp">
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-    <!-- If targeting API 33+, replace READ_EXTERNAL_STORAGE with new media permissions -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -20,6 +19,7 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -27,8 +27,10 @@
         android:theme="@style/Theme.TestApp"
         tools:targetApi="31">
 
-        <!-- Main Activity -->
-        <activity android:name=".MainActivity"
+        <!-- Splash Screen (Launcher Activity) -->
+        <activity
+            android:name=".SplashScreen"
+            android:theme="@style/Theme.TestApp"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,14 +38,24 @@
             </intent-filter>
         </activity>
 
+        <!-- Main Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+
         <!-- Authentication Activities -->
-        <activity android:name=".loginpage" android:exported="false" />
-        <activity android:name=".accountcreation" android:exported="false" />
+        <activity
+            android:name=".loginpage"
+            android:exported="false" />
+        <activity
+            android:name=".accountcreation"
+            android:exported="false" />
 
         <!-- Other Activities -->
-        <activity android:name=".ArticlePage" android:exported="false" />
-        <activity android:name=".ProfilePage" android:exported="false" />
-        <activity android:name=".bookmarkspage" android:exported="false" />
+        <activity
+            android:name=".ArticlePage"
+            android:exported="false" />
 
     </application>
+
 </manifest>

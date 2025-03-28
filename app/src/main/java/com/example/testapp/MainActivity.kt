@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.example.testapp.fragments.BookmarksFragment
 import com.example.testapp.fragments.HomeFragment
@@ -19,22 +20,32 @@ class MainActivity : AppCompatActivity() {
     private var currentUser: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
+        // Check for current user immediately
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
 
+        // Redirect to login if no user is logged in
         if (currentUser == null) {
             redirectToLogin()
             return
         }
 
-        Toast.makeText(this, "Welcome ${currentUser?.displayName ?: currentUser?.email}", Toast.LENGTH_SHORT).show()
+        // Set up the main activity layout
+        setContentView(R.layout.activity_main)
+
+        // Welcome toast with user's display name or email
+        Toast.makeText(
+            this,
+            "Welcome ${currentUser?.displayName ?: currentUser?.email ?: "User"}",
+            Toast.LENGTH_SHORT
+        ).show()
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
-        // Load HomeFragment by default
+        // Load Home fragment by default
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
         }
@@ -59,8 +70,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Logout method to be used from Profile Fragment or Settings
+    fun logout() {
+        auth.signOut()
+        redirectToLogin()
+    }
+
     private fun redirectToLogin() {
-        startActivity(Intent(this, loginpage::class.java))  // Ensure class name is correct
+        val intent = Intent(this, loginpage::class.java)
+        // Clear the back stack to prevent returning to MainActivity
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
         finish()
     }
 
@@ -77,6 +97,15 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView.selectedItemId = R.id.home
         } else {
             super.onBackPressed()
+        }
+    }
+
+    // Optional: Check if user is still authenticated
+    override fun onResume() {
+        super.onResume()
+        currentUser = auth.currentUser
+        if (currentUser == null) {
+            redirectToLogin()
         }
     }
 }

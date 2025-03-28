@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ArticlePage">
@@ -17,18 +18,36 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp">
 
+            <!-- Back Button -->
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="12dp"
                 android:padding="5dp"
+                android:background="?attr/selectableItemBackground"
+                android:scaleType="centerInside"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/baseline_arrow_back_24" />
 
+            <!-- Bookmark Icon -->
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="12dp"
+                android:padding="5dp"
+                android:background="?attr/selectableItemBackground"
+                android:scaleType="centerInside"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/outline_bookmark_add_24" />
+
+            <!-- Article Image -->
             <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="0dp"
@@ -39,84 +58,82 @@
                 app:layout_constraintTop_toBottomOf="@id/imageView"
                 app:srcCompat="@drawable/img_2" />
 
+            <!-- Gradient Shadow Overlay -->
             <View
                 android:id="@+id/shadowOverlay"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
                 android:background="@drawable/gradient_shadow"
                 app:layout_constraintBottom_toBottomOf="@id/imageView3"
                 app:layout_constraintEnd_toEndOf="@id/imageView3"
                 app:layout_constraintStart_toStartOf="@id/imageView3" />
 
+            <!-- Article Headline -->
             <TextView
                 android:id="@+id/textView20"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="Article Headline"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:shadowColor="#000000"
-                android:shadowDx="2"
-                android:shadowDy="2"
-                android:shadowRadius="4"
-                app:layout_constraintBottom_toTopOf="@+id/textView21"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:shadowColor="#99000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                app:layout_constraintBottom_toTopOf="@id/textView21"
                 app:layout_constraintEnd_toEndOf="@id/imageView3"
                 app:layout_constraintStart_toStartOf="@id/imageView3" />
 
+            <!-- Article Timestamp -->
             <TextView
                 android:id="@+id/textView21"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginHorizontal="16dp"
                 android:text="Time of article posted"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
-                android:shadowColor="#000000"
-                android:shadowDx="2"
-                android:shadowDy="2"
-                android:shadowRadius="4"
+                android:shadowColor="#99000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
                 app:layout_constraintBottom_toBottomOf="@id/imageView3"
                 app:layout_constraintEnd_toEndOf="@id/imageView3"
                 app:layout_constraintStart_toStartOf="@id/imageView3" />
 
+            <!-- Author Name -->
             <TextView
                 android:id="@+id/textView22"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:paddingHorizontal="16dp"
                 android:text="Author"
-                android:padding="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/articleContent"
-                app:layout_constraintStart_toStartOf="@+id/articleContent" />
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imageView3" />
 
+            <!-- Article Content -->
             <TextView
                 android:id="@+id/articleContent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_margin="16dp"
                 android:text="This is the content of the news article. It can be a long paragraph or multiple paragraphs describing the news in detail."
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
+                android:lineSpacingExtra="4sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button" />
-
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/blue"
-                android:text="Sports"
-                app:layout_constraintEnd_toEndOf="@+id/articleContent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+                app:layout_constraintTop_toBottomOf="@id/textView22" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BookmarksFragment">
+    android:fitsSystemWindows="true"
+    tools:context=".fragments.BookmarksFragment">
 
     <!-- Title: Bookmarks -->
     <TextView
@@ -20,14 +21,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Search Bar -->
-    <SearchView
+    <EditText
         android:id="@+id/searchView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:queryHint="Search bookmarks..."
-        android:background="@drawable/inputtextbg"
-        android:iconifiedByDefault="false"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/searchview_background"
+        android:hint="Search..."
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textSize="16sp"
+        android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bookmarksTitle" />
