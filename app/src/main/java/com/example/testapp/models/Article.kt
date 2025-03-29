@@ -1,6 +1,7 @@
 package com.example.testapp.models
 
 data class Article(
+    val id:String,
     val title: String?,
     val description: String?,
     val link: String?, // URL of the news

@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="Your Bookmarks"
         android:textStyle="bold"
-        android:textSize="26sp"
+        android:textSize="20sp"
         android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,7 +25,7 @@
         android:id="@+id/searchView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_margin="8dp"
         android:background="@drawable/searchview_background"
         android:hint="Search..."
         android:drawableStart="@android:drawable/ic_menu_search"

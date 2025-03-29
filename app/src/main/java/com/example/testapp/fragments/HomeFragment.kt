@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.testapp.ArticlePage
 import com.example.testapp.R
 import com.example.testapp.adapters.NewsAdapter
+import com.example.testapp.adapters.CategoryAdapter
 import com.example.testapp.api.RetrofitClient
 import com.example.testapp.models.Article
 import com.example.testapp.models.NewsResponse
@@ -23,9 +24,12 @@ import retrofit2.Response
 class HomeFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerViewCategories: RecyclerView
     private lateinit var newsAdapter: NewsAdapter
+    private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var progressBar: ProgressBar
     private var newsList: List<Article> = listOf()
+    private val categories = listOf("All", "Technology", "Sports", "Business", "Health", "Entertainment", "Science")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,26 +42,40 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = view.findViewById(R.id.recyclerView)
+        recyclerViewCategories = view.findViewById(R.id.recyclerViewCategories)
         progressBar = view.findViewById(R.id.progressBar)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Initialize adapter with empty list
+        // Initialize NewsAdapter with empty list
         newsAdapter = NewsAdapter(newsList) { newsItem ->
             openArticlePage(newsItem)
         }
         recyclerView.adapter = newsAdapter
 
-        // Fetch news from API
-        fetchNews()
+        // Initialize CategoryAdapter with the OnCategorySelectedListener interface
+        recyclerViewCategories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        categoryAdapter = CategoryAdapter(categories, object : CategoryAdapter.OnCategorySelectedListener {
+            override fun onCategorySelected(category: String, position: Int) {
+                fetchNews(category)
+                Toast.makeText(requireContext(), "Selected: $category", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        recyclerViewCategories.adapter = categoryAdapter
+
+        // Fetch default news (All or Technology)
+        fetchNews("Technology")
     }
 
-    private fun fetchNews() {
+    private fun fetchNews(category: String) {
         progressBar.visibility = View.VISIBLE
 
         val apiKey = getString(R.string.api_key)
+        val categoryQuery = if (category == "All") "" else category.lowercase()
 
-        RetrofitClient.instance.getNews(apiKey, "technology", "en")
+        RetrofitClient.instance.getNews(apiKey, categoryQuery, "en")
             .enqueue(object : Callback<NewsResponse> {
                 override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
                     progressBar.visibility = View.GONE
