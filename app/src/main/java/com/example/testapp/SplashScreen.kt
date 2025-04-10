@@ -3,13 +3,10 @@ package com.example.testapp
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 class SplashScreen : AppCompatActivity() {
-    private val splashTime: Long = 3000 // 3 seconds delay
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,21 +27,13 @@ class SplashScreen : AppCompatActivity() {
 
         val getStartedButton: Button = findViewById(R.id.button)
 
-        // If it's the first time, show SplashScreen. Otherwise, move to login/signup.
+        // If it's the first time, wait for user input; otherwise, go to login page
         if (isFirstTime) {
-            val handler = Handler(Looper.getMainLooper())
-            val runnable = Runnable {
-                startActivity(Intent(this, loginpage::class.java))
-                finish()
-            }
-            handler.postDelayed(runnable, splashTime)
-
-            // Skip splash if user clicks "Get Started"
             getStartedButton.setOnClickListener {
-                handler.removeCallbacks(runnable)
-                val editor = sharedPreferences.edit()
-                editor.putBoolean("isFirstTime", false)
-                editor.apply()
+                sharedPreferences.edit().apply {
+                    putBoolean("isFirstTime", false)
+                    apply()
+                }
                 startActivity(Intent(this, loginpage::class.java))
                 finish()
             }

@@ -35,10 +35,10 @@ class NewsAdapter(
         val diffCallback = NewsDiffCallback(newsList, newNewsList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
-        // Ensure a new reference to avoid potential mutation issues
-        newsList = ArrayList(newNewsList)
+        newsList = ArrayList(newNewsList) // 🔥 Ensure a new reference
         diffResult.dispatchUpdatesTo(this)
     }
+
 
     class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val title: TextView = itemView.findViewById(R.id.newsTitle)

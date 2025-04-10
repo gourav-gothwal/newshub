@@ -13,10 +13,11 @@
         android:id="@+id/bookmarksTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="Your Bookmarks"
-        android:textStyle="bold"
         android:textSize="20sp"
-        android:padding="12dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,29 +26,32 @@
         android:id="@+id/searchView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/searchview_background"
-        android:hint="Search..."
         android:drawableStart="@android:drawable/ic_menu_search"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:textSize="16sp"
+        android:hint="Search..."
         android:inputType="text"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bookmarksTitle" />
 
     <!-- RecyclerView for Bookmarks List -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/bookmarks_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="visible"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:scrollbars="vertical"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchView"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchView" />
 
     <!-- Empty State Message (Visible when no bookmarks exist) -->
     <TextView

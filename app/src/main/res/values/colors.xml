@@ -5,6 +5,7 @@
     <color name="blue">#0000FF</color>
     <color name="gray">#808080</color>
     <color name="light_blue">#ADD8E6</color>
+    <color name="holo_red_dark">#8B0000</color>
 </resources>
 
 

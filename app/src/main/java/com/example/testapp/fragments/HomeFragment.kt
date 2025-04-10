@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +17,7 @@ import com.example.testapp.adapters.CategoryAdapter
 import com.example.testapp.api.RetrofitClient
 import com.example.testapp.models.Article
 import com.example.testapp.models.NewsResponse
+import com.google.firebase.auth.FirebaseAuth
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,6 +29,7 @@ class HomeFragment : Fragment() {
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var progressBar: ProgressBar
+    private lateinit var welcomeTextView: TextView
     private var newsList: List<Article> = listOf()
     private val categories = listOf("All", "Technology", "Sports", "Business", "Health", "Entertainment", "Science")
 
@@ -41,11 +43,18 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize Views
+        welcomeTextView = view.findViewById(R.id.textViewWelcome)
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerViewCategories = view.findViewById(R.id.recyclerViewCategories)
         progressBar = view.findViewById(R.id.progressBar)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Display Welcome Message with User's Name
+        val user = FirebaseAuth.getInstance().currentUser
+        val userName = user?.displayName ?: "User"
+        welcomeTextView.text = "Welcome, $userName 👋"
 
         // Initialize NewsAdapter with empty list
         newsAdapter = NewsAdapter(newsList) { newsItem ->
@@ -53,13 +62,12 @@ class HomeFragment : Fragment() {
         }
         recyclerView.adapter = newsAdapter
 
-        // Initialize CategoryAdapter with the OnCategorySelectedListener interface
+        // Initialize CategoryAdapter without toast
         recyclerViewCategories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         categoryAdapter = CategoryAdapter(categories, object : CategoryAdapter.OnCategorySelectedListener {
             override fun onCategorySelected(category: String, position: Int) {
                 fetchNews(category)
-                Toast.makeText(requireContext(), "Selected: $category", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -80,28 +88,35 @@ class HomeFragment : Fragment() {
                 override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
                     progressBar.visibility = View.GONE
                     if (response.isSuccessful) {
-                        newsList = response.body()?.results ?: emptyList()
-                        newsAdapter.updateData(newsList)
-                        recyclerView.visibility = View.VISIBLE
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to load news", Toast.LENGTH_SHORT).show()
+                        val articles = response.body()?.results ?: emptyList()
+
+                        // Ensure `source_id` is not null and filter unique articles by title + source
+                        val uniqueArticles = articles.distinctBy { "${it.title}-${it.source_id ?: "unknown"}" }
+
+                        if (uniqueArticles.isNotEmpty()) {
+                            newsAdapter.updateData(uniqueArticles)
+                            recyclerView.visibility = View.VISIBLE
+                        } else {
+                            recyclerView.visibility = View.GONE
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                     progressBar.visibility = View.GONE
-                    Toast.makeText(requireContext(), "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
     }
 
     private fun openArticlePage(newsItem: Article) {
         val intent = Intent(requireContext(), ArticlePage::class.java).apply {
-            putExtra("headline", newsItem.title)
-            putExtra("image", newsItem.image_url)
-            putExtra("author", newsItem.source_id)
-            putExtra("content", newsItem.description)
-            putExtra("time", newsItem.pubDate)
+            putExtra("ARTICLE_ID", newsItem.source_id)
+            putExtra("TITLE", newsItem.title)
+            putExtra("IMAGE_URL", newsItem.image_url)
+            putExtra("AUTHOR", newsItem.source_id)
+            putExtra("CONTENT", newsItem.description)
+            putExtra("TIME", newsItem.pubDate)
+            putExtra("URL", newsItem.link)
         }
         startActivity(intent)
     }

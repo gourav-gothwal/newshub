@@ -13,5 +13,12 @@ interface NewsApiService {
         @Query("q") query: String,
         @Query("language") language: String = "en"
     ): Call<NewsResponse>
+
+    @GET("search")
+    fun searchNews(
+        @Query("apiKey") apiKey: String,
+        @Query("q") query: String,
+        @Query("language") language: String
+    ): Call<NewsResponse>
+
 }
-// hello
