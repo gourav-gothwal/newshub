@@ -5,55 +5,45 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.testapp.R
 import com.example.testapp.models.Article
 
-class BreakingNewsAdapter(
+class BreakingNewsPagerAdapter(
+    private val articles: List<Article>,
     private val onItemClick: (Article) -> Unit
-) : ListAdapter<Article, BreakingNewsAdapter.BreakingNewsViewHolder>(BreakingNewsDiffCallback()) {
+) : RecyclerView.Adapter<BreakingNewsPagerAdapter.NewsViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BreakingNewsViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_breaking_news_card, parent, false)
-        return BreakingNewsViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: BreakingNewsViewHolder, position: Int) {
-        holder.bind(getItem(position), onItemClick)
-    }
-
-    class BreakingNewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val newsImage: ImageView = itemView.findViewById(R.id.newsImage)
         private val newsTitle: TextView = itemView.findViewById(R.id.newsTitle)
-        private val newsSource: TextView = itemView.findViewById(R.id.newsSource)
 
-        fun bind(article: Article, onItemClick: (Article) -> Unit) {
+        fun bind(article: Article) {
             newsTitle.text = article.title
-            newsSource.text = article.source_id ?: "Unknown Source"
 
-            // Load image with Glide
+            // Glide with improved error and fallback handling
             Glide.with(itemView.context)
                 .load(article.image_url)
-                .placeholder(R.drawable.sample_image)
-                .error(R.drawable.sample_image)
-                .centerCrop()
+                .placeholder(R.drawable.sample_image) // Placeholder while loading
+                .error(R.drawable.sample_image) // Error image in case of failure
+                .centerCrop() // Ensures image scales properly
                 .into(newsImage)
 
-            // Set click listener
+            // Handle item click to open the article
             itemView.setOnClickListener { onItemClick(article) }
         }
     }
-}
 
-class BreakingNewsDiffCallback : DiffUtil.ItemCallback<Article>() {
-    override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
-        return oldItem.id == newItem.id
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_breaking_news_pager, parent, false)
+        return NewsViewHolder(view)
     }
 
-    override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
-        return oldItem == newItem
+    override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
+        holder.bind(articles[position])
     }
+
+    override fun getItemCount() = articles.size
 }

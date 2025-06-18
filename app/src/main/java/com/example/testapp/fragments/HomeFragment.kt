@@ -10,10 +10,12 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.testapp.ArticlePage
 import com.example.testapp.R
 import com.example.testapp.adapters.NewsAdapter
 import com.example.testapp.adapters.CategoryAdapter
+import com.example.testapp.adapters.CarouselNewsAdapter
 import com.example.testapp.api.RetrofitClient
 import com.example.testapp.models.Article
 import com.example.testapp.models.NewsResponse
@@ -26,54 +28,47 @@ class HomeFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewCategories: RecyclerView
+    private lateinit var viewPager: ViewPager2
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var progressBar: ProgressBar
     private lateinit var welcomeTextView: TextView
+
     private var newsList: List<Article> = listOf()
     private val categories = listOf("All", "Technology", "Sports", "Business", "Health", "Entertainment", "Science")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_home, container, false)
-    }
+    ): View = inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize Views
         welcomeTextView = view.findViewById(R.id.textViewWelcome)
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerViewCategories = view.findViewById(R.id.recyclerViewCategories)
+        viewPager = view.findViewById(R.id.viewPagerBreakingNews)
         progressBar = view.findViewById(R.id.progressBar)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerViewCategories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        // Display Welcome Message with User's Name
-        val user = FirebaseAuth.getInstance().currentUser
-        val userName = user?.displayName ?: "User"
+        // Show user's name
+        val userName = FirebaseAuth.getInstance().currentUser?.displayName ?: "User"
         welcomeTextView.text = "Welcome, $userName 👋"
 
-        // Initialize NewsAdapter with empty list
-        newsAdapter = NewsAdapter(newsList) { newsItem ->
-            openArticlePage(newsItem)
-        }
+        // Setup Adapters
+        newsAdapter = NewsAdapter(newsList) { openArticlePage(it) }
         recyclerView.adapter = newsAdapter
-
-        // Initialize CategoryAdapter without toast
-        recyclerViewCategories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         categoryAdapter = CategoryAdapter(categories, object : CategoryAdapter.OnCategorySelectedListener {
             override fun onCategorySelected(category: String, position: Int) {
                 fetchNews(category)
             }
         })
-
         recyclerViewCategories.adapter = categoryAdapter
 
-        // Fetch default news (All or Technology)
         fetchNews("Technology")
     }
 
@@ -89,14 +84,18 @@ class HomeFragment : Fragment() {
                     progressBar.visibility = View.GONE
                     if (response.isSuccessful) {
                         val articles = response.body()?.results ?: emptyList()
-
-                        // Ensure `source_id` is not null and filter unique articles by title + source
                         val uniqueArticles = articles.distinctBy { "${it.title}-${it.source_id ?: "unknown"}" }
 
-                        if (uniqueArticles.isNotEmpty()) {
-                            newsAdapter.updateData(uniqueArticles)
-                            recyclerView.visibility = View.VISIBLE
-                        } else {
+                        // Setup carousel with first 5 random items
+                        val carouselAdapter = CarouselNewsAdapter(uniqueArticles.take(5)) { openArticlePage(it) }
+                        viewPager.adapter = carouselAdapter
+
+                        // Setup main list
+                        newsAdapter.updateData(uniqueArticles)
+                        recyclerView.visibility = View.VISIBLE
+
+                        if (uniqueArticles.isEmpty()) {
+                            // Show placeholder text or empty state message
                             recyclerView.visibility = View.GONE
                         }
                     }
@@ -104,19 +103,20 @@ class HomeFragment : Fragment() {
 
                 override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                     progressBar.visibility = View.GONE
+                    // Show error message or retry button
                 }
             })
     }
 
-    private fun openArticlePage(newsItem: Article) {
+    private fun openArticlePage(article: Article) {
         val intent = Intent(requireContext(), ArticlePage::class.java).apply {
-            putExtra("ARTICLE_ID", newsItem.source_id)
-            putExtra("TITLE", newsItem.title)
-            putExtra("IMAGE_URL", newsItem.image_url)
-            putExtra("AUTHOR", newsItem.source_id)
-            putExtra("CONTENT", newsItem.description)
-            putExtra("TIME", newsItem.pubDate)
-            putExtra("URL", newsItem.link)
+            putExtra("ARTICLE_ID", article.source_id)
+            putExtra("TITLE", article.title)
+            putExtra("IMAGE_URL", article.image_url)
+            putExtra("AUTHOR", article.source_id)
+            putExtra("CONTENT", article.description)
+            putExtra("TIME", article.pubDate)
+            putExtra("URL", article.link)
         }
         startActivity(intent)
     }

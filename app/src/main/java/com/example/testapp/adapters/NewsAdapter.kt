@@ -32,13 +32,11 @@ class NewsAdapter(
     override fun getItemCount(): Int = newsList.size
 
     fun updateData(newNewsList: List<Article>) {
+        newsList = newNewsList.toMutableList() // Use mutable list for more efficient updates
         val diffCallback = NewsDiffCallback(newsList, newNewsList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
-
-        newsList = ArrayList(newNewsList) // 🔥 Ensure a new reference
         diffResult.dispatchUpdatesTo(this)
     }
-
 
     class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val title: TextView = itemView.findViewById(R.id.newsTitle)
@@ -54,19 +52,27 @@ class NewsAdapter(
             author.text = article.source_id?.takeIf { it.isNotBlank() } ?: "Unknown Author"
 
             // Handle publish date safely
+            val formattedDate = try {
+                val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).parse(article.pubDate)
+                date?.let { dateFormatter.format(it) } ?: article.pubDate
+            } catch (e: Exception) {
+                article.pubDate
+            }
             publishDate.apply {
-                text = article.pubDate ?: ""
-                visibility = if (article.pubDate.isNullOrEmpty()) View.GONE else View.VISIBLE
+                text = formattedDate
+                visibility = if (formattedDate.isNullOrEmpty()) View.GONE else View.VISIBLE
             }
 
-            // Load image with Glide
+            // Handle image loading
             imageCard.visibility = if (!article.image_url.isNullOrEmpty()) View.VISIBLE else View.GONE
-            Glide.with(itemView.context)
-                .load(article.image_url)
-                .placeholder(R.drawable.placeholder_image)
-                .error(R.drawable.placeholder_image)
-                .centerCrop()
-                .into(imageView)
+            if (imageCard.visibility == View.VISIBLE) {
+                Glide.with(itemView.context)
+                    .load(article.image_url)
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.placeholder_image)
+                    .centerCrop()
+                    .into(imageView)
+            }
 
             // Handle item click
             itemView.setOnClickListener { onItemClick(article) }

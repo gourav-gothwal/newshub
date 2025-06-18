@@ -1,5 +1,6 @@
 package com.example.testapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -24,6 +25,7 @@ class ArticlePage : AppCompatActivity() {
     private lateinit var articleContent: TextView
     private lateinit var backButton: ImageView
     private lateinit var bookmarkButton: ImageView
+    private lateinit var shareButton: ImageView
 
     private var currentArticle: BookmarkedArticle? = null
     private var isBookmarked = false
@@ -45,6 +47,7 @@ class ArticlePage : AppCompatActivity() {
         articleContent = findViewById(R.id.articleContent)
         backButton = findViewById(R.id.imageView)
         bookmarkButton = findViewById(R.id.imageView4)
+        shareButton = findViewById(R.id.imageView7)
 
         // ✅ Corrected intent data retrieval
         val articleId = intent.getStringExtra("ARTICLE_ID") ?: return
@@ -92,6 +95,10 @@ class ArticlePage : AppCompatActivity() {
             toggleBookmark()
         }
 
+        shareButton.setOnClickListener{
+            shareArticle()
+        }
+
         // Handle back button click
         backButton.setOnClickListener {
             finish()
@@ -120,5 +127,17 @@ class ArticlePage : AppCompatActivity() {
             if (isBookmarked) R.drawable.baseline_bookmark_24
             else R.drawable.outline_bookmark_border_24
         )
+    }
+
+    private fun shareArticle() {
+        currentArticle?.let { article ->
+            val shareText = "${article.title}\n\nRead more at: ${article.url}"
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, shareText)
+                type = "text/plain"
+            }
+            startActivity(Intent.createChooser(shareIntent, "Share article via"))
+        }
     }
 }

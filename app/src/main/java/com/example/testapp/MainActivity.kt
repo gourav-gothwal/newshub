@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private var currentUser: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Optional: Enable light/dark theme toggle, you can remove this line if not needed.
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
 
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         // Set up the main activity layout
         setContentView(R.layout.activity_main)
 
-        // Welcome toast with user's display name or email
+        // Welcome message
         Toast.makeText(
             this,
             "Welcome ${currentUser?.displayName ?: currentUser?.email ?: "User"}",
@@ -85,8 +86,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadFragment(fragment: Fragment) {
+        val fragmentTag = fragment::class.java.simpleName
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
+            .replace(R.id.fragmentContainer, fragment, fragmentTag)
             .commit()
     }
 

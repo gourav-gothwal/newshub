@@ -6,7 +6,7 @@
     android:layout_height="220dp"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/sample_image" />
+            android:src="@drawable/sample_image"
+            android:contentDescription="News Image" />
 
         <!-- News Title -->
         <TextView
@@ -32,6 +33,7 @@
             android:ellipsize="end"
             android:text="Sample News Title"
             android:textSize="14sp"
+            android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <!-- News Source -->
