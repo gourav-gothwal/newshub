@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun redirectToLogin() {
-        val intent = Intent(this, loginpage::class.java)
+        val intent = Intent(this, LoginPage::class.java)
         // Clear the back stack to prevent returning to MainActivity
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)

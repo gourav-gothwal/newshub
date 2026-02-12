@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="24dp"
     android:fitsSystemWindows="true"
-    tools:context=".loginpage">
+    tools:context=".LoginPage">
 
     <TextView
         android:id="@+id/textView2"

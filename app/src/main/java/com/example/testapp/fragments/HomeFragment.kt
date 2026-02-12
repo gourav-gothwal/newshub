@@ -51,6 +51,20 @@ class HomeFragment : Fragment() {
         viewPager = view.findViewById(R.id.viewPagerBreakingNews)
         progressBar = view.findViewById(R.id.progressBar)
 
+        // Setup Carousel Effect
+        viewPager.clipToPadding = false
+        viewPager.clipChildren = false
+        viewPager.offscreenPageLimit = 3
+        viewPager.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+
+        val compositePageTransformer = androidx.viewpager2.widget.CompositePageTransformer()
+        compositePageTransformer.addTransformer(androidx.viewpager2.widget.MarginPageTransformer(30))
+        compositePageTransformer.addTransformer { page, position ->
+            val r = 1 - kotlin.math.abs(position)
+            page.scaleY = 0.85f + r * 0.15f
+        }
+        viewPager.setPageTransformer(compositePageTransformer)
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerViewCategories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
@@ -87,16 +101,23 @@ class HomeFragment : Fragment() {
                         val uniqueArticles = articles.distinctBy { "${it.title}-${it.source_id ?: "unknown"}" }
 
                         // Setup carousel with first 5 random items
-                        val carouselAdapter = CarouselNewsAdapter(uniqueArticles.take(5)) { openArticlePage(it) }
+                        val carouselList = uniqueArticles.take(5)
+                        val carouselAdapter = CarouselNewsAdapter(carouselList) { openArticlePage(it) }
                         viewPager.adapter = carouselAdapter
 
                         // Setup main list
-                        newsAdapter.updateData(uniqueArticles)
-                        recyclerView.visibility = View.VISIBLE
+                        val recentNewsList = if (uniqueArticles.size > 5) uniqueArticles.drop(5) else emptyList()
+                        newsAdapter.updateData(recentNewsList)
+                        
+                        // Toggle visibility of Recent News section
+                        val recentVisibility = if (recentNewsList.isNotEmpty()) View.VISIBLE else View.GONE
+                        recyclerView.visibility = recentVisibility
+                        view?.findViewById<View>(R.id.recommendedHeader)?.visibility = recentVisibility
 
                         if (uniqueArticles.isEmpty()) {
-                            // Show placeholder text or empty state message
+                            // Show placeholder text or empty state message (optional)
                             recyclerView.visibility = View.GONE
+                            view?.findViewById<View>(R.id.recommendedHeader)?.visibility = View.GONE
                         }
                     }
                 }

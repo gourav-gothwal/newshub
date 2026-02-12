@@ -34,11 +34,11 @@ class SplashScreen : AppCompatActivity() {
                     putBoolean("isFirstTime", false)
                     apply()
                 }
-                startActivity(Intent(this, loginpage::class.java))
+                startActivity(Intent(this, LoginPage::class.java))
                 finish()
             }
         } else {
-            startActivity(Intent(this, loginpage::class.java))
+            startActivity(Intent(this, LoginPage::class.java))
             finish()
         }
     }

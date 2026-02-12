@@ -46,7 +46,7 @@
 
         <!-- Authentication Activities -->
         <activity
-            android:name=".loginpage"
+            android:name=".LoginPage"
             android:exported="false" />
         <activity
             android:name=".accountcreation"

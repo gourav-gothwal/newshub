@@ -32,8 +32,9 @@ class NewsAdapter(
     override fun getItemCount(): Int = newsList.size
 
     fun updateData(newNewsList: List<Article>) {
-        newsList = newNewsList.toMutableList() // Use mutable list for more efficient updates
-        val diffCallback = NewsDiffCallback(newsList, newNewsList)
+        val oldList = ArrayList(newsList) // Capture current list
+        newsList = newNewsList
+        val diffCallback = NewsDiffCallback(oldList, newsList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         diffResult.dispatchUpdatesTo(this)
     }

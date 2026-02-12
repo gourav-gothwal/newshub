@@ -86,7 +86,7 @@ dependencies {
     // Kotlin Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    ksp("com.google.devtools.ksp:symbol-processing-api:1.9.24-1.0.20")
+
 
     // Testing Libraries
     testImplementation("junit:junit:4.13.2")

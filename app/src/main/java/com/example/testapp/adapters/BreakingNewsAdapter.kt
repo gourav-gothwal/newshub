@@ -10,10 +10,10 @@ import com.bumptech.glide.Glide
 import com.example.testapp.R
 import com.example.testapp.models.Article
 
-class BreakingNewsPagerAdapter(
+class BreakingNewsAdapter(
     private val articles: List<Article>,
     private val onItemClick: (Article) -> Unit
-) : RecyclerView.Adapter<BreakingNewsPagerAdapter.NewsViewHolder>() {
+) : RecyclerView.Adapter<BreakingNewsAdapter.NewsViewHolder>() {
 
     inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val newsImage: ImageView = itemView.findViewById(R.id.newsImage)

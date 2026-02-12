@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.testapp.R
-import com.example.testapp.loginpage
+import com.example.testapp.LoginPage
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -132,7 +132,7 @@ class ProfileFragment : Fragment() {
         firebaseAuth.signOut()
         googleSignInClient.signOut()
 
-        val intent = Intent(requireActivity(), loginpage::class.java)
+        val intent = Intent(requireActivity(), LoginPage::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         requireActivity().finish() // Close the current activity
