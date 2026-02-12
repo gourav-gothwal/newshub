@@ -1,35 +1,42 @@
 # 📰 NewsHub
 
-A modern **News Application** built with **Kotlin (XML-based UI)** that delivers the latest and trending news articles from around the world.  
-NewsHub integrates **Trivia News API** for fetching real-time content, with support for **offline storage**, **bookmarks**, and **article sharing**.  
+A modern, feature-rich **News Application** built with **Kotlin** and **XML-based UI**. NewsHub delivers the latest and trending news articles from around the world using the **NewsData.io API**, featuring a stunning UI with smooth animations and robust offline support.
 
-This project is developed collaboratively by contributors as a portfolio-ready Android app.
+This project demonstrates modern Android development practices including MVVM architecture, Coroutines, Room Database, and Firebase Authentication.
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features
 
-- 🌍 **Fetch Latest News** – Powered by [Trivia News API](https://rapidapi.com/trivia/api/trivia-news/).
-- 🔐 **Secure Login** – Integrated **Firebase Authentication** (Email/Password, Google Sign-In).
-- 💾 **Offline Support** – Local persistence with **Room Database**.
-- ☁️ **Cloud Storage** – Sync and backup using **Firestore**.
-- 📌 **Bookmark Articles** – Save favorite articles for later.
-- 📤 **Share News** – Share interesting articles with friends.
-- 🔎 **Search & Filter** – Quickly find the news you care about.
-- 📱 **Clean UI** – Built with XML layouts for simplicity and performance.
-- 📰 **Categorized News sections** - Divisions based on categories like Sports, Tech, Politics, etc.
+### 📱 User Interface & Experience
+- **Breaking News Carousel**: A visually engaging carousel with smooth scale-and-fade animations for top headlines.
+- **Categorized News**: Easy navigation through categories like Technology, Sports, Business, Health, and Entertainment.
+- **Modern Dashboard**: A clean, card-based layout with a polished search bar and "Recent News" section.
+- **Fluid Animations**: Custom `PageTransformer` for carousel and optimized RecyclerViews.
+
+### 🔐 Authentication & Profile
+- **Secure Login**: Integrated **Firebase Authentication** supporting both Email/Password and **Google Sign-In**.
+- **Splash Screen**: Smart redirection based on user login state.
+- **Profile Management**: View and edit profile details, change password, and secure logout.
+
+### 💾 Data & Offline Support
+- **Local Bookmarks**: Save articles for later reading using **Room Database**.
+- **Efficient Caching**: Optimized network calls and image loading with **Glide**.
+- **Search Functionality**: Real-time search to find specific news topics instantly.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Language**: Kotlin  
-- **UI**: XML Layouts  
-- **Database**: Room Database  
-- **Backend Services**: Firebase Authentication, Firestore  
-- **API**: Trivia News API  
-- **Architecture**: MVVM (Model-View-ViewModel)  
-- **Other**: Retrofit, Glide/Picasso (for images), Coroutines, LiveData  
+- **Language**: Kotlin
+- **Architecture**: MVVM (Model-View-ViewModel)
+- **UI Components**: XML Layouts, ConstraintLayout, ViewPager2, Material Design Components
+- **Networking**: Retrofit2 + Gson
+- **Image Loading**: Glide
+- **Local Database**: Room Database (with KSP)
+- **Authentication**: Firebase Auth (Google Sign-In)
+- **Concurrency**: Kotlin Coroutines & Flow
+- **API Provider**: [NewsData.io](https://newsdata.io/)
 
 ---
 
@@ -38,12 +45,16 @@ This project is developed collaboratively by contributors as a portfolio-ready A
 ```
 NewsHub/
  ├── app/
- │   ├── data/          # Repositories, Room Entities, DAO
- │   ├── network/       # Retrofit API services
- │   ├── ui/            # Activities, Fragments, Adapters, ViewModels
- │   ├── utils/         # Helper classes, extensions
- │   └── ...
- └── build.gradle
+ │   ├── src/main/java/com/example/testapp/
+ │   │   ├── adapters/      # RecyclerView & ViewPager Adapters
+ │   │   ├── api/           # Retrofit Service & Client
+ │   │   ├── data/          # Room Database, DAOs, Entities, Repositories
+ │   │   ├── fragments/     # UI Fragments (Home, Profile, Search)
+ │   │   ├── models/        # Data Classes
+ │   │   ├── viewmodel/     # ViewModels
+ │   │   └── ...            # Activities & Utils
+ │   └── res/               # Layouts, Drawables, Values
+ └── build.gradle.kts       # Dependencies & Build Config
 ```
 
 ---
@@ -56,46 +67,31 @@ git clone https://github.com/gourav-gothwal/newshub.git
 cd newshub
 ```
 
-### 2. Add API Key
-- Sign up for **Trivia News API** on RapidAPI.
-- Add your API key in `local.properties`:
-  ```properties
-  NEWS_API_KEY="your_api_key_here"
-  ```
+### 2. Configure API Key
+- Sign up for a free API key at [NewsData.io](https://newsdata.io/).
+- Add your API key to `local.properties` or `strings.xml` (as `api_key`).
 
 ### 3. Firebase Setup
-- Add your app to Firebase console.
-- Download `google-services.json` and place it in `/app` folder.
+- Create a project in the [Firebase Console](https://console.firebase.google.com/).
+- Enable **Authentication** (Email/Password and Google providers).
+- Add your Android app (`com.example.testapp`).
+- **CRITICAL**: Add your machine's **SHA-1 Fingerprint** to the Firebase Console project settings for Google Sign-In to work.
+  - Run `gradlew signingReport` to find your SHA-1.
+- Download `google-services.json` and place it in the `app/` directory.
 
 ### 4. Build & Run
-- Open project in **Android Studio**.
-- Sync Gradle and run on emulator/device.
+- Open the project in **Android Studio**.
+- Sync Gradle to download dependencies.
+- Build and run on an Emulator or Physical Device.
 
 ---
-
-## 📸 Screenshots
-
-Coming Soon
-
----
-
 ## 👥 Contributors
 
-- Gourav Gothwal (https://github.com/gourav-gothwal)  
-- Goutam Singh (https://github.com/Goutam-0810)  
+- **Gourav Gothwal** ([@gourav-gothwal](https://github.com/gourav-gothwal))
+- **Goutam Singh** ([@Goutam-0810](https://github.com/Goutam-0810))
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
-
----
-
-## 💡 Future Enhancements
-
-- 🔔 Push Notifications for breaking news.  
-- 🎨 Dark Mode support.  
-- 🌐 Multi-language support.  
-
----
+This project is licensed under the **MIT License**.
